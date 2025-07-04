@@ -3,6 +3,9 @@ import type { HeadFC, PageProps } from "gatsby";
 // import { VSCodePanelTab, VSCodePanels } from "@vscode-elements/react-elements";
 // 改为尝试 VSCodeTabs/VSCodeTab/VSCodeTabPanel
 import { VscodeTabs, VscodeTabHeader, VscodeTabPanel } from "@vscode-elements/react-elements";
+import { EditorTabs } from '../components/EditorTabs';
+import { CodeEditorPanel } from '../components/CodeEditorPanel';
+import { CodeWithLineNumbers } from '../components/CodeWithLineNumbers';
 
 const MIN_SIDEBAR_WIDTH = 48;
 const CLOSE_THRESHOLD = 250; // 新增，拖动到此宽度及以下时关闭
@@ -109,6 +112,13 @@ const IndexPage: React.FC<PageProps> = () => {
     }
   };
 
+  const codeTabs = [
+    { label: "main.ts", content: "function hello() {\\n  console.log('Hello, world!');\\n}" },
+    { label: "about.md", content: "# 关于\\n\\n这是一个演示。" }
+  ];
+
+  const [activeTab, setActiveTab] = React.useState(0);
+
   // 侧边栏是否显示内容
   const showSidebarContent = sidebarWidth >= MIN_SIDEBAR_WIDTH;
 
@@ -174,21 +184,15 @@ const IndexPage: React.FC<PageProps> = () => {
         />
         {/* Main Content */}
         <main ref={mainRef} className="flex-1 bg-[#1e1e1e] p-0">
-          <div className="h-full p-8">
-            <VscodeTabs className="w-full">
-              <VscodeTabHeader>技术栈</VscodeTabHeader>
-              <VscodeTabHeader>项目</VscodeTabHeader>
-              <VscodeTabPanel>
-                <div className="rounded border mt-4 p-6 font-mono text-base text-gray-200 min-h-[300px] select-text whitespace-pre-line" style={{ background: "#1e1e1e", borderColor: "#333" }}>
-                  // 技术栈：React, TypeScript, Gatsby, ...\n// 你可以在这里补充更多内容
-                </div>
-              </VscodeTabPanel>
-              <VscodeTabPanel>
-                <div className="rounded border mt-4 p-6 font-mono text-base text-gray-200 min-h-[300px] select-text whitespace-pre-line" style={{ background: "#1e1e1e", borderColor: "#333" }}>
-                  // 项目：xxx, yyy, zzz\n// 你可以在这里补充更多内容
-                </div>
-              </VscodeTabPanel>
-            </VscodeTabs>
+          <div className="h-full">
+            <EditorTabs
+              tabs={codeTabs}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            />
+            <CodeEditorPanel>
+              <CodeWithLineNumbers code={codeTabs[activeTab].content} />
+            </CodeEditorPanel>
           </div>
         </main>
       </div>
